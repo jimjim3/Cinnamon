@@ -19,6 +19,7 @@
 #include "cinm-mlir/Dialect/Cinm/Transforms/Passes.h"
 #include "cinm-mlir/Dialect/Cnm/IR/CnmDialect.h"
 #include "cinm-mlir/Dialect/Cnm/Transforms/Passes.h"
+#include "cinm-mlir/Dialect/DigitalCim/IR/DigitalCimDialect.h"
 #include "cinm-mlir/Dialect/Memristor/IR/MemristorDialect.h"
 #include "cinm-mlir/Dialect/Memristor/Transforms/Passes.h"
 #include "cinm-mlir/Dialect/UPMEM/IR/UPMEMDialect.h"
@@ -54,6 +55,7 @@ int main(int argc, char *argv[]) {
                   cim::CimDialect,             //
                   cnm::CnmDialect,             //
                   memristor::MemristorDialect, //
+                  digitalcim::DigitalCimDialect, //
                   alpine::AlpineDialect,       //
                   upmem::UPMEMDialect>();
 
