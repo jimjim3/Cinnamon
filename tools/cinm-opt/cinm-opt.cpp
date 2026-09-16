@@ -8,6 +8,7 @@
 #include "cinm-mlir/Conversion/CimPasses.h"
 #include "cinm-mlir/Conversion/CinmPasses.h"
 #include "cinm-mlir/Conversion/CnmPasses.h"
+#include "cinm-mlir/Conversion/DigitalCimPasses.h"
 #include "cinm-mlir/Conversion/MemristorPasses.h"
 #include "cinm-mlir/Conversion/UPMEMPasses.h"
 #include "cinm-mlir/Conversion/UPMEMToLLVM/UPMEMToLLVM.h"
@@ -79,6 +80,7 @@ int main(int argc, char *argv[]) {
   registerCimConversionPasses();
   registerCnmConversionPasses();
   registerMemristorConversionPasses();
+  registerDigitalCimConversionPasses();
   cinm::registerCinmBufferizableOpInterfaces(registry);
   cinm::registerCinmTilingExternalModels(registry);
   cim::registerCimTransformsPasses();

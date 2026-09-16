@@ -216,6 +216,7 @@ add_subdirectory(test)
 add_subdirectory(tools)
 
 add_subdirectory(runtime/Memristor)
+add_subdirectory(runtime/DigitalCim)
 
 # The benchmark suites travel with the compiler that lowers them: a suite and
 # the tools are one version of one thing, and the experiment pipelines resolve
