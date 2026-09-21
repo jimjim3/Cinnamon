@@ -63,14 +63,37 @@ CallOp emitRuntimeCall(PatternRewriter &rewriter, Location loc,
   return CallOp::create(rewriter, loc, fnName, resultTypes, operands);
 }
 
-// Casts a statically-shaped memref to an equal-rank, fully-dynamic-shape
-// memref, so every call site of a given (rank, element type) shares one
-// external symbol regardless of the macro's concrete geometry -- mirrors
-// MemristorToFunc.cpp's identical trick.
+// Casts a memref (any static/strided layout) to an equal-rank,
+// fully-dynamic-shape-AND-layout memref, so every call site of a given
+// (rank, element type) shares one external symbol regardless of the
+// macro's concrete geometry.
+//
+// BUG FIX (2026-09-16, found via real MLIR codegen integration testing --
+// src/codegen.py -- not by any hand-written smoke test): the original
+// version of this helper built the dynamic target type with NO explicit
+// layout attribute, i.e. MLIR's default/identity layout, which requires a
+// statically-zero offset. That's only ever true for a freshly-allocated
+// memref; a memref.subview with a nonzero offset (exactly what real
+// codegen produces when slicing a larger buffer -- see codegen.py's
+// module docstring) is NOT cast-compatible with an identity-layout
+// target, and cinm-opt correctly rejected it ("cast incompatible").
+// Fixed by casting to a fully-dynamic STRIDED layout instead (dynamic
+// offset AND dynamic strides), which can represent any possible layout
+// and is therefore always a legal cast target regardless of the source's
+// concrete offset/strides.
+//
+// NOTE: MemristorToFunc.cpp's castToDynamicShape has this exact same
+// latent bug (verified by reading it) -- it has just never been
+// triggered because nothing in this repo's existing tests ever passed it
+// a non-offset-0 memref. Out of scope to fix here (that's an upstream
+// Cinnamon file this project doesn't own), but worth knowing about if
+// Memristor conversion is ever exercised with a subview operand.
 Value castToDynamicShape(PatternRewriter &rewriter, Location loc, Value memref) {
   auto memrefTy = cast<MemRefType>(memref.getType());
   SmallVector<int64_t> dynShape(memrefTy.getRank(), ShapedType::kDynamic);
-  auto dynTy = MemRefType::get(dynShape, memrefTy.getElementType());
+  SmallVector<int64_t> dynStrides(memrefTy.getRank(), ShapedType::kDynamic);
+  auto layout = StridedLayoutAttr::get(rewriter.getContext(), ShapedType::kDynamic, dynStrides);
+  auto dynTy = MemRefType::get(dynShape, memrefTy.getElementType(), layout);
   return memref::CastOp::create(rewriter, loc, dynTy, memref);
 }
 
