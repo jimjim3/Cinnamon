@@ -37,6 +37,12 @@ add_public_tablegen_target(DigitalCimConversionPassIncGen)
 
 add_mlir_doc(DigitalCimPasses DigitalCimConversionPasses ./ -gen-pass-doc)
 
+set(LLVM_TARGET_DEFINITIONS DigitalFlashCimPasses.td)
+mlir_tablegen(DigitalFlashCimPasses.h.inc -gen-pass-decls -name DigitalFlashCimConversion ${TBLGEN_EXTRA})
+add_public_tablegen_target(DigitalFlashCimConversionPassIncGen)
+
+add_mlir_doc(DigitalFlashCimPasses DigitalFlashCimConversionPasses ./ -gen-pass-doc)
+
 set(LLVM_TARGET_DEFINITIONS AlpinePasses.td)
 mlir_tablegen(AlpinePasses.h.inc -gen-pass-decls -name AlpineConversion ${TBLGEN_EXTRA})
 add_public_tablegen_target(AlpineConversionPassIncGen)

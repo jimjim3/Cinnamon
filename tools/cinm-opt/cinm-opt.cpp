@@ -9,6 +9,7 @@
 #include "cinm-mlir/Conversion/CinmPasses.h"
 #include "cinm-mlir/Conversion/CnmPasses.h"
 #include "cinm-mlir/Conversion/DigitalCimPasses.h"
+#include "cinm-mlir/Conversion/DigitalFlashCimPasses.h"
 #include "cinm-mlir/Conversion/MemristorPasses.h"
 #include "cinm-mlir/Conversion/UPMEMPasses.h"
 #include "cinm-mlir/Conversion/UPMEMToLLVM/UPMEMToLLVM.h"
@@ -21,6 +22,7 @@
 #include "cinm-mlir/Dialect/Cnm/IR/CnmDialect.h"
 #include "cinm-mlir/Dialect/Cnm/Transforms/Passes.h"
 #include "cinm-mlir/Dialect/DigitalCim/IR/DigitalCimDialect.h"
+#include "cinm-mlir/Dialect/DigitalFlashCim/IR/DigitalFlashCimDialect.h"
 #include "cinm-mlir/Dialect/Memristor/IR/MemristorDialect.h"
 #include "cinm-mlir/Dialect/Memristor/Transforms/Passes.h"
 #include "cinm-mlir/Dialect/UPMEM/IR/UPMEMDialect.h"
@@ -57,6 +59,7 @@ int main(int argc, char *argv[]) {
                   cnm::CnmDialect,             //
                   memristor::MemristorDialect, //
                   digitalcim::DigitalCimDialect, //
+                  digitalflashcim::DigitalFlashCimDialect, //
                   alpine::AlpineDialect,       //
                   upmem::UPMEMDialect>();
 
@@ -81,6 +84,7 @@ int main(int argc, char *argv[]) {
   registerCnmConversionPasses();
   registerMemristorConversionPasses();
   registerDigitalCimConversionPasses();
+  registerDigitalFlashCimConversionPasses();
   cinm::registerCinmBufferizableOpInterfaces(registry);
   cinm::registerCinmTilingExternalModels(registry);
   cim::registerCimTransformsPasses();
